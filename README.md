@@ -10,7 +10,15 @@ This project was created to address the limited functionality of Claromentis' bu
 
 ## Drawbacks
 Of course, there are drawbacks. Here is a non-exhaustive list of known shortcomings/pitfalls:
-* requires installation of PDO library for particular database (not really difficult to do, but not something with Claromentis staff enable by default)
+* requires installation of PDO library for particular database (not really difficult to do, but not something the Claromentis staff enable by default)
 * requires actively running ``composer.phar`` to install dependencies (this support is not built into Claromentis' implementation of ``phing``)
 * usage will in all probability fall outside support from Claromentis
 
+## Installation
+```shell
+$ cd /Claromentis/web
+$ git clone https://github.com/LaboratoryGA/orm.git intranet/orm
+$ phing -Dapp=orm install
+$ cd intranet/orm
+$ php -d allow_url_fopen=true bin/composer.phar install
+```
