@@ -76,3 +76,6 @@ $migrator->up(function(Doctrine\DBAL\Schema\Schema $schema) {
 	$table->setPrimaryKey(['id']);
 });
 ```
+
+## Fixtures
+This is a future option to allow easy pre-populating of new tables, etc.

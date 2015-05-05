@@ -61,10 +61,12 @@ class Migrator {
 		$fromSchema = $this->schemaManager->createSchema();
 		$toSchema = clone $fromSchema;
 		
-		$closure($toSchema);
+		$return = $closure($toSchema);
 		
 		// apply all the changes
 		$this->commitChanges($fromSchema, $toSchema);
+		
+		return $return;
 	}
 	
 	private function commitChanges(Schema $fromSchema, Schema $toSchema) {
