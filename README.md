@@ -7,9 +7,10 @@ built-in database abstraction layer. These limitation include, but are not limit
 * limited support for SQL types (particularly during table creation)
 * no real support for "LIMIT" (in MSSQL "TOP"), resulting in queries which may 
 run longer than necessary
-* no support for referential integrity (particularly during table creation)
+* no support for referential integrity (particularly during table creation). Not only does the migration API not provide a way of defining foreign key constraints, but for MySQL all tables are "MyISAM".
 * ``DBObject`` not very useful for creating models and odd contraints (for 
 example, you need to instatiate a "model" in order to query it)
+* no support for transaction isolation - not only does the database access API not provide mechanisms for handling transactions, all MySQL tables are created as MyISAM, sp there is implicitly no transaction isolation. For an enterprise system, this is very poor.
 
 ## Drawbacks
 Of course, there are drawbacks. Here is a non-exhaustive list of known 
