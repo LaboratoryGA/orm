@@ -20,9 +20,10 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-namespace Claromentis\Orm\Models;
+namespace Claromentis\Orm\Model;
 
 use Claromentis\Orm\Model;
+use Claromentis\Orm\Util\String;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
@@ -39,34 +40,51 @@ class User extends Model {
 		$builder = new ClassMetadataBuilder($metadata);
 		
 		$builder->setTable('users');
-		$builder->createField('id', 'integer')->isPrimaryKey()->generatedValue()->build();
-		$builder->addField('subject', 'string', [
-			'columnName'	=> 'username',
-			'length'		=> 100,
-			'nullable'		=> true
-		]);
-		$builder->addField('credentials', 'string', [
-			'columnName'	=> 'password',
-			'length'		=> 50,
-			'nullable'		=> true
-		]);
-		$builder->addField('familyName', 'string', [
-			'columnName'	=> 'surname',
-			'length'		=> 200,
-			'nullable'		=> true
-		]);
-		$builder->addField('givenName', 'string', [
-			'columnName'	=> 'firstname',
-			'length'		=> 200,
-			'nullable'		=> true
-		]);
+		$builder->createField('id', 'integer')
+				->makePrimaryKey()
+				->generatedValue()
+				->build();
+		$builder->createField('subject', 'string')
+				->columnName('username')
+				->length(100)
+				->nullable()
+				->build();
+		$builder->createField('credentials', 'string')
+				->columnName('password')
+				->length(100)
+				->nullable()
+				->build();
+		$builder->createField('familyName', 'string')
+				->columnName('surname')
+				->length(200)
+				->nullable()
+				->build();
+		$builder->createField('givenName', 'string')
+				->columnName('firstname')
+				->length(200)
+				->nullable()
+				->build();
+		
+		$builder->createManyToMany('groups', 'Claromentis\Orm\Model\Group')
+				->setJoinTable('user_groups')
+				->addInverseJoinColumn('groupid', 'groupid')
+				->addJoinColumn('userid', 'id')
+				->fetchExtraLazy()
+				->build();
+		
+		$builder->createManyToMany('roles', 'Claromentis\Orm\Model\Role')
+				->setJoinTable('user_roles')
+				->addInverseJoinColumn('roleid', 'roleid')
+				->addJoinColumn('userid', 'id')
+				->fetchExtraLazy()
+				->build();
 		
 //		echo '<pre>' . print_r($metadata, true) . '</pre>';
 	}
 	
 	public function __construct() {
-//		$this->roles = new ArrayCollection();
-//		$this->groups = new ArrayCollection();
+		$this->groups = new ArrayCollection();
+		$this->roles = new ArrayCollection();
 //		$this->bosses = new ArrayCollection();
 	}
 	
@@ -172,6 +190,26 @@ class User extends Model {
 		return $this;
 	}
 	
+	/**
+	 *
+	 * @var ArrayCollection
+	 */
+	protected $groups;
+	
+	/**
+	 * 
+	 * @return ArrayCollection
+	 */
+	public function getGroups() {
+		return $this->groups;
+	}
+	
+	/**
+	 *
+	 * @var ArrayCollection
+	 */
+	protected $roles;
+	
 	public function getFullName() {
 		$parts = [];
 		
@@ -201,6 +239,71 @@ class User extends Model {
 	public function getProfileURL() {
 		return '/intranet/people/viewprofile.php?' 
 				. http_build_query(['id' => $this->getId()]);
+	}
+	
+	/**
+	 * Checks the user to see if they belong to the group (or groups).
+	 * <p>
+	 * If a string is passed, then the group is located using the group's
+	 * name.
+	 * <p>
+	 * If an number is passed, then the group is located by ID.
+	 * <p>
+	 * If an array is passed, each individual element is passed back to the
+	 * function (via recursion), and the previous 3 tests apply.
+	 * 
+	 * @param Group|string|number|array $group either a group object to compare
+	 * against, or the string name of the group, or an integer of the group's ID
+	 * or an array containing either a list of group objects, or strings 
+	 * containing the group names, or numbers containing the IDs
+	 * @return boolean <code>true</code> if this user belongs to one or more
+	 * of the supplied groups
+	 */
+	public function belongsTo($group) {
+		if ($group instanceof Group) {
+//			die("HALT!". print_r($this->groups, true));
+//			return $this->groups->exists($group);
+			foreach ($this->groups as $g) {
+				if ($g->getId() == $group->getId()) {
+					return true;
+				}
+			}
+			
+			return false;
+		}
+		elseif (is_numeric($group)) {
+			if (!($found = Group::find($group))) {
+				throw new Exception("Unable to locate group using ID '$group'");
+			}
+			
+			return $this->belongsTo($found);
+		}
+		elseif (is_string($group)) {
+			if (!($found = Group::findOneBy(array('name' => $group)))) {
+				throw new Exception("Unable to locate group using name '$group'");
+			}
+			
+			return $this->belongsTo($found);
+		}
+		elseif (is_array($group)) {
+			foreach ($group as $g) {
+				if ($this->belongsTo($g)) {
+					return true;
+				}
+			}
+			
+			return false;
+		}
+		die("Received a ... " . gettype($group));
+		
+		
+		throw new Exception('Unexpected group test type ' . gettype($group));
+	}
+	
+	public function __toString() {
+		return $this->getFullName() 
+				. ' - Groups: (' . String::valueOf($this->groups) . ')'
+				. ' - Roles: (' . String::valueOf($this->roles) . ')';
 	}
 	
 }

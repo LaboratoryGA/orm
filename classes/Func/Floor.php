@@ -1,5 +1,5 @@
 <?php
-namespace Claromentis\Orm\Functions;
+namespace Claromentis\Orm\Func;
 
 use Doctrine\ORM\Query\AST\Functions\FunctionNode;
 use Doctrine\ORM\Query\Lexer;;

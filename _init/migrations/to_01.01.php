@@ -1,6 +1,16 @@
 <?php
+$_db_migration_to = '01.01';
+if (!isset($migrations) || !is_object($migrations))
+	die("This file cannot be executed directly");
+$migrations->CheckValid($_db_migration_to);
+//===========================================================================================
 
-/*
+
+
+$migrations->Run('01_test.php', <<<'DB_UPDATE_FILE'
+<?php
+
+/* 
  * Copyright (C) 2015 Nathan Crause <nathan at crause.name>
  *
  * This file is part of ORM
@@ -20,30 +30,16 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-namespace Claromentis\Orm\Components;
+$migrator = new Claromentis\Orm\Migrator();
 
-use TemplaterComponent;
-
-/**
- * Description of CurrentUser
- *
- * @author Nathan Crause <nathan at crause.name>
- */
-class CurrentUser implements TemplaterComponent {
+$migrator->up(function(Doctrine\DBAL\Schema\Schema $schema) {
+	$table = $schema->createTable('test');
 	
-	public function Show($attributes) {
-		\ClaApplication::Enter('orm');
-		
-//		$user = \Claromentis\Orm\Models\User::find($_SESSION['SESSION_UID']);
-		$user = \Claromentis\Orm\EntityManagerFactory::get()->find('Claromentis\Orm\Models\User', $_SESSION['SESSION_UID']);
-//		$user = \Claromentis\Orm\EntityManagerFactory::get()->getRepository('Claromentis\Orm\Models\User')->find($_SESSION['SESSION_UID']);
-		
-		return <<<__HTML
-<ul>
-	<li>Subject: {$user->getSubject()}</li>
-	<li>Full Name: {$user->getFullName()}</li>
-</ul>
-__HTML;
-	}
+	$table->addColumn('id', 'integer');
+	$table->setPrimaryKey(['id']);
+});
+DB_UPDATE_FILE
+);
 
-}
+//===========================================================================================
+$migrations->SetVersion('01.01');

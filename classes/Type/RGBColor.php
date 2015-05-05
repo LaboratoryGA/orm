@@ -9,7 +9,7 @@
  * the express written consent of FiveHT Media Ltd. is prohibited.
  */
 
-namespace Claromentis\Orm\Types;
+namespace Claromentis\Orm\Type;
 
 use RuntimeException;
 

@@ -116,12 +116,12 @@ final class EntityManagerFactory {
 	}
 	
 	private static function registerTypes() {
-		Type::addType('compactdate', 'Claromentis\Orm\Types\CompactDateType');
-		Type::addType('compactdatetime', 'Claromentis\Orm\Types\CompactDateTimeType');
-		Type::addType('hexcolor', 'Claromentis\Orm\Types\HexColorType');
-		Type::addType('timestamp', 'Claromentis\Orm\Types\TimestampType');
-		Type::addType('timezone', 'Claromentis\Orm\Types\TimeZoneType');
-		Type::addType('enum', 'Claromentis\Orm\Types\EnumType');
+		Type::addType('compactdate', 'Claromentis\Orm\Type\CompactDateType');
+		Type::addType('compactdatetime', 'Claromentis\Orm\Type\CompactDateTimeType');
+		Type::addType('hexcolor', 'Claromentis\Orm\Type\HexColorType');
+		Type::addType('timestamp', 'Claromentis\Orm\Type\TimestampType');
+		Type::addType('timezone', 'Claromentis\Orm\Type\TimeZoneType');
+		Type::addType('enum', 'Claromentis\Orm\Type\EnumType');
 	}
 	
 	private static function registerDoctrineTypeMappings($connection) {
@@ -129,7 +129,7 @@ final class EntityManagerFactory {
 	}
 	
 	private static function registerNumericFunctions($config) {
-		$config->addCustomNumericFunction('FLOOR', 'Claromentis\Orm\Functions\Floor');
+		$config->addCustomNumericFunction('FLOOR', 'Claromentis\Orm\Func\Floor');
 	}
 	
 }

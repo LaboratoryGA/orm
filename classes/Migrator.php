@@ -22,7 +22,6 @@
 
 namespace Claromentis\Orm;
 
-use Closure;
 use Doctrine\DBAL\Schema\Schema;
 
 /**
@@ -54,11 +53,11 @@ class Migrator {
 	 * Invoke this method from within your migration scripts to perform the
 	 * actual build instructions.
 	 * 
-	 * @param Closure $closure function which is invoked to actually
+	 * @param callable $closure function which is invoked to actually
 	 * perform the migration up. It will be passed a single parameter, namely
 	 * an instance of Doctrine\DBAL\Schema\Schema
 	 */
-	public function up(Closure $closure) {
+	public function up(callable $closure) {
 		$fromSchema = $this->schemaManager->createSchema();
 		$toSchema = clone $fromSchema;
 		

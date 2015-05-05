@@ -1,32 +1,33 @@
 <?php
-namespace Claromentis\Orm\Types;
+namespace Claromentis\Orm\Type;
 
-use DateTimeZone;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\Type;
 
 /**
- * Custom doctrine type for retrieving and storing time-zone references
+ * Custom Doctrine type for a field which contains a hex-encoded colour.
+ * <p>
+ * The database value itself also contains the leading "#", per HTML notation.
  *
  * @author Nathan Crause
  * @version 1.0
  */
-class TimeZoneType extends Type {
+class HexColorType extends Type {
     
     public function getName() {
-        return 'timezone';
+        return 'hexcolor';
     }
     
     public function getSqlDeclaration(array $fieldDeclaration, AbstractPlatform $platform) {
-        return 'varchar(255)';
+        return 'varchar(7)';
     }
     
     public function convertToPHPValue($value, AbstractPlatform $platform) {
-        return new DateTimeZone($value);
+        return RGBColor::parseHex($value);
     }
     
     public function convertToDatabaseValue($value, AbstractPlatform $platform) {
-        return $value->getName();
+        return $value ? $value->toHex(true) : null;
     }
 	
 }

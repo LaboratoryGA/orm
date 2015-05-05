@@ -1,5 +1,5 @@
 <?php
-namespace Claromentis\Orm\Types;
+namespace Claromentis\Orm\Type;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\Type;

@@ -1,5 +1,5 @@
 <?php
-namespace Claromentis\Orm\Types;
+namespace Claromentis\Orm\Type;
 
 use DateTime;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
