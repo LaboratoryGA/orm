@@ -7,10 +7,10 @@ built-in database abstraction layer. These limitation include, but are not limit
 * limited support for SQL types (particularly during table creation)
 * no real support for "LIMIT" (in MSSQL "TOP"), resulting in queries which may 
 run longer than necessary
-* no support for referential integrity (particularly during table creation). Not only does the migration API not provide a way of defining foreign key constraints, but for MySQL all tables are "MyISAM".
-* ``DBObject`` not very useful for creating models and odd contraints (for 
-example, you need to instatiate a "model" in order to query it)
-* no support for transaction isolation - not only does the database access API not provide mechanisms for handling transactions, all MySQL tables are created as MyISAM, sp there is implicitly no transaction isolation. For an enterprise system, this is very poor.
+* no support for referential integrity (particularly during table creation). Not only does the migration API not provide a way of defining foreign key constraints, but for MySQL all tables are "MyISAM". For an enterprise system, this is inexcusable.
+* ``DBObject`` useless for creating models and odd contraints (for 
+example, you need to instatiate a "model" in order to query it - that's entirely illogical)
+* no support for transaction isolation - not only does the database access API not provide mechanisms for handling transactions, all MySQL tables are created as MyISAM, so there is implicitly no transaction isolation. For an enterprise system, this is very poor.
 
 ## Drawbacks
 Of course, there are drawbacks. Here is a non-exhaustive list of known 
@@ -19,7 +19,7 @@ shortcomings/pitfalls:
 difficult to do, but not something the Claromentis staff enable by default)
 * requires actively running ``composer.phar`` to install dependencies (this 
 support is not built into Claromentis' implementation of ``phing``)
-* usage will in all probability fall outside support from Claromentis
+* usage will in all probability fall outside support from Claromentis, since they prefer to stick to their own internal, archaic DBAL, even in version 8.
 * even though the implemented migrator here is more comprehensive than 
 Claromentis' DBAL, the ``phing`` build doesn't support it - specifically, the 
 generated ``_init/schema/schema.php`` file will not contain the custom 
